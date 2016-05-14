@@ -32,6 +32,8 @@ int callback(void *data, int argc, char **argv, char **azColName);
 
 struct Posts load_posts(int number_of_posts, int offset);
 struct Post load_post_id(int post_id);
+// Given a keyword string, returns all posts where it appears in the body text
+struct Posts search_posts(char *keyword);
 
 int update_post(char *post_id, char *post_title, char *post_text);
 int create_post(char *post_title, char *post_text);

@@ -11,64 +11,7 @@
 #include <string.h>
 #include <math.h>
 #include "load_posts.h"
-
-// Decodes URL strings to text (eg '+' -> ' ' and % hex codes)
-void html_to_text(char *source, char *dest) {
-    while (*source != '\0') {
-        if (*source == '+') {
-            *dest = ' ';
-        }
-        else if (*source == '%') {
-            int hex_char;
-            sscanf(source+1, "%2x", &hex_char);
-            *dest = hex_char;
-            source += 2;
-        } else {
-            *dest = *source;
-        }
-        source++;
-        dest++;
-    }
-    *dest = '\0';
-}
-
-// Must include '=' after variable name
-// Malloc is used, up to user to free returned string
-// Doesn't check beginning of variable (eg post_title= could match against my_post_title=)
-char *get_variable(char *source, char *var) {
-    char *tmp = strstr(source, var); // Find variable
-    
-    // Return NULL if string not found
-    if (tmp == NULL) {
-        return tmp;
-    }
-    
-    tmp += strlen(var); // Offset the variable name
-    
-    // How many characters until '&'
-    int length = 0;
-    while (*tmp != '&' && *tmp != '\0') {
-        length++;
-        tmp++;
-    }
-    tmp = tmp - length;
-    
-    // Space for 2 new strings
-    char *variable_raw = malloc(length+1);
-    char *variable_filtered = malloc(length+1);
-    
-    // Use source to fill raw string
-    for (int i = 0; i < length; i++) {
-        variable_raw[i] = tmp[i];
-    }
-    variable_raw[length] = '\0';
-    
-    // Decode raw string to filtered string and free raw string
-    html_to_text(variable_raw, variable_filtered);
-    free(variable_raw);
-    
-    return variable_filtered;
-}
+#include "base_html.h"
 
 int main(int argc, const char * argv[]) {
     // Needed, says the document return plaintext

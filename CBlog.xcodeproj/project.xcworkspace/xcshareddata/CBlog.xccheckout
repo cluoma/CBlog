@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>14F2C349-6005-4C6D-BC26-5A7E9019818A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>CBlog</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>89F456785E97D2F460DD560440C3865386009D0D</key>
+		<string>https://github.com/cluoma/CBlog.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>CBlog.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>89F456785E97D2F460DD560440C3865386009D0D</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/cluoma/CBlog.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>89F456785E97D2F460DD560440C3865386009D0D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>89F456785E97D2F460DD560440C3865386009D0D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CBlog</string>
+		</dict>
+	</array>
+</dict>
+</plist>

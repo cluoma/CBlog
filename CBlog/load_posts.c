@@ -10,17 +10,21 @@
 
 #include "load_posts.h"
 
-int post_count = 0;
-
 // Callback function for use with exec.
 // Loads each post into an array of struct Post
 int callback(void *data, int argc, char **argv, char **azColName) {
-    int i;
-    // Recast void *data to *struct Post
-    struct Post *post = data;
+    
+    // Recast void *data to *struct Posts
+    struct Posts *posts = data;
+    
+    // Realloc memory for a new post
+    struct Post *post = (struct Post *) realloc(posts->posts, sizeof(struct Post)*(1+posts->number_of_posts));
+    
+    // Tmp variable for post count
+    int post_count = posts->number_of_posts;
     
     // For each returned row
-    for(i=0; i<argc; i++)
+    for(int i=0; i<argc; i++)
     {
         if (strcmp(azColName[i], "title") == 0)             // Post title
         {
@@ -45,7 +49,10 @@ int callback(void *data, int argc, char **argv, char **azColName) {
             post[post_count].time[strlen(argv[i])] = '\0';
         }
     }
-    post_count += 1;
+    
+    // Point posts to new list of posts and increment post count
+    posts->posts = post;
+    posts->number_of_posts = post_count + 1;
     
     return 0;
 }
@@ -173,8 +180,12 @@ int delete_post(int post_id) {
 // Packs the array of posts in a struct Posts, which is a struct
 struct Posts load_posts(int number_of_posts, int offset) {
     
-    // Allocate memory for post structs
-    struct Post *all_posts = malloc(sizeof(struct Post) * number_of_posts);
+    // Initialize struct to hold posts
+    struct Posts all_posts;
+    // Initialize pointer to posts as NULL so we can realloc
+    all_posts.posts = NULL;
+    // Initialize post count to 0
+    all_posts.number_of_posts = 0;
     
     /* SQLite variable declarations */
     int rc;
@@ -188,7 +199,7 @@ struct Posts load_posts(int number_of_posts, int offset) {
     sqlite3 *db = open_database();
     
     /* Execute SQL statement */
-    rc = sqlite3_exec(db, sql, callback, all_posts, &zErrMsg);
+    rc = sqlite3_exec(db, sql, callback, &all_posts, &zErrMsg);
     if( rc != SQLITE_OK ){
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
@@ -197,17 +208,55 @@ struct Posts load_posts(int number_of_posts, int offset) {
     }
     sqlite3_close(db);
     
-    struct Posts posts;
-    posts.number_of_posts = post_count;
-    posts.posts = all_posts;
+    return all_posts;
+}
+
+// Given a keyword string, returns all posts where it appears in the body text
+struct Posts search_posts(char *keyword) {
     
-    return posts;
+    // Initialize struct to hold posts
+    struct Posts all_posts;
+    // Initialize pointer to posts as NULL so we can realloc
+    all_posts.posts = NULL;
+    // Initialize post count to 0
+    all_posts.number_of_posts = 0;
+    
+    /* SQLite variable declarations */
+    int rc;
+    char *sql;
+    char *zErrMsg = 0;
+    
+    /* Create SQL statement */
+    asprintf(&sql, "SELECT title, post_id, text, datetime(time, 'unixepoch') AS time from posts where lower(text) like lower('%%%s%%') order by time DESC", keyword);
+    
+    /* Connect to DB */
+    sqlite3 *db = open_database();
+    
+    /* Execute SQL statement */
+    rc = sqlite3_exec(db, sql, callback, &all_posts, &zErrMsg);
+    if( rc != SQLITE_OK ){
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    }else{
+        fprintf(stderr, "Operation done successfully\n");
+    }
+    sqlite3_close(db);
+    
+    // Free memory allocated for sql query string
+    free(sql);
+    
+    return all_posts;
 }
 
 // Loads a single post with a given post_id
 struct Post load_post_id(int post_id) {
     
-    struct Post post;
+    // Initialize struct to hold posts
+    struct Posts all_posts;
+    // Initialize pointer to posts as NULL so we can realloc
+    all_posts.posts = NULL;
+    // Initialize post count to 0
+    all_posts.number_of_posts = 0;
     
     /* SQLite variable declarations */
     int rc;
@@ -221,7 +270,7 @@ struct Post load_post_id(int post_id) {
     sqlite3 *db = open_database();
     
     /* Execute SQL statement */
-    rc = sqlite3_exec(db, sql, callback, &post, &zErrMsg);
+    rc = sqlite3_exec(db, sql, callback, &all_posts, &zErrMsg);
     if( rc != SQLITE_OK ){
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
@@ -229,6 +278,11 @@ struct Post load_post_id(int post_id) {
         fprintf(stderr, "Operation done successfully\n");
     }
     sqlite3_close(db);
+    
+    // Get first post from returned posts (there should only be one)
+    struct Post post = all_posts.posts[0];
+    // Free list of posts since we just made a copy
+    free(all_posts.posts);
     
     return post;
 }
