@@ -132,10 +132,10 @@ void remove_post(int post_id) {
 
 int main(int argc, const char * argv[]) {
     
-    //char *env_string = getenv("QUERY_STRING");
+    char *env_string = getenv("QUERY_STRING");
     
     // DEBUGGING
-    char *env_string = "edit=0";
+    //char *env_string = "edit=0";
     //
     
     /* Mandatory HTML info and navbar, etc. */
