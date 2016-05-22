@@ -57,6 +57,51 @@ int callback(void *data, int argc, char **argv, char **azColName) {
     return 0;
 }
 
+static int archives_callback(void *data, int argc, char **argv, char **azColName){
+    // Recast void *data to struct
+    struct archives *archives = data;
+    
+    // Realloc memory for a new row
+    char **month_s = (char **) realloc(archives->month_s, sizeof(char *)*(1+archives->row_count));
+    int *month = (int *) realloc(archives->month, sizeof(int)*(1+archives->row_count));
+    int *year = (int *) realloc(archives->year, sizeof(int)*(1+archives->row_count));
+    int *post_count = (int *) realloc(archives->post_count, sizeof(int)*(1+archives->row_count));
+    
+    // Tmp variable for row count
+    int row_count = archives->row_count;
+    
+    // For each returned row
+    for(int i=0; i<argc; i++)
+    {
+        if (strcmp(azColName[i], "month") == 0)             // Post title
+        {
+            char *tmp = nmonth_to_smonth(atoi(argv[i]));
+            month_s[row_count] = malloc(strlen(tmp) + 1);
+            strcpy(month_s[row_count], tmp);
+            month_s[row_count][strlen(tmp)] = '\0';
+            
+            month[row_count] = atoi(argv[i]);
+        }
+        else if (strcmp(azColName[i], "year") == 0)      // Post ID
+        {
+            year[row_count] = atoi(argv[i]);
+        }
+        else if (strcmp(azColName[i], "num_posts") == 0)         // Post text
+        {
+            post_count[row_count] = atoi(argv[i]);
+        }
+    }
+    
+    // Point posts to new list of posts and increment post count
+    archives->month_s = month_s;
+    archives->month = month;
+    archives->year = year;
+    archives->post_count = post_count;
+    archives->row_count = row_count + 1;
+    
+    return 0;
+}
+
 // Helper function to open SQLite3 DB
 sqlite3 *open_database() {
     sqlite3 *db;
@@ -211,6 +256,74 @@ struct Posts load_posts(int number_of_posts, int offset) {
     return all_posts;
 }
 
+// Loads all posts inta a struct *post
+// Packs the array of posts in a struct Posts, which is a struct
+struct Posts load_posts_monthyear(int month, int year) {
+    
+    // Initialize struct to hold posts
+    struct Posts all_posts;
+    // Initialize pointer to posts as NULL so we can realloc
+    all_posts.posts = NULL;
+    // Initialize post count to 0
+    all_posts.number_of_posts = 0;
+    
+    /* SQLite variable declarations */
+    int rc;
+    char sql[300];
+    char *zErrMsg = 0;
+    
+    /* Create SQL statement */
+    sprintf(sql, "SELECT title, post_id, text, datetime(time, 'unixepoch') AS time from posts WHERE CAST(strftime('%%m',time,'unixepoch') AS INT) = %d AND CAST(strftime('%%Y',time,'unixepoch') AS INT) = %d order by time DESC", month, year);
+    
+    /* Connect to DB */
+    sqlite3 *db = open_database();
+    
+    /* Execute SQL statement */
+    rc = sqlite3_exec(db, sql, callback, &all_posts, &zErrMsg);
+    if( rc != SQLITE_OK ){
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    }else{
+        fprintf(stderr, "Operation done successfully\n");
+    }
+    sqlite3_close(db);
+    
+    return all_posts;
+}
+
+struct archives load_archives() {
+    
+    struct archives archives;
+    archives.month_s = NULL;
+    archives.month = NULL;
+    archives.year = NULL;
+    archives.post_count = NULL;
+    archives.row_count = 0;
+    
+    /* SQLite variable declarations */
+    int rc;
+    char *sql;
+    char *zErrMsg = 0;
+    
+    /* Create SQL statement */
+    sql = "SELECT strftime('%m',time,'unixepoch') AS month, strftime('%Y',time,'unixepoch') AS year, COUNT(*) AS num_posts FROM posts GROUP BY month, year ORDER BY time DESC";
+    
+    /* Connect to DB */
+    sqlite3 *db = open_database();
+    
+    /* Execute SQL statement */
+    rc = sqlite3_exec(db, sql, archives_callback, &archives, &zErrMsg);
+    if( rc != SQLITE_OK ){
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    }else{
+        fprintf(stderr, "Operation done successfully\n");
+    }
+    sqlite3_close(db);
+    
+    return archives;
+}
+
 // Given a keyword string, returns all posts where it appears in the body text
 struct Posts search_posts(char *keyword) {
     
@@ -285,6 +398,38 @@ struct Post load_post_id(int post_id) {
     free(all_posts.posts);
     
     return post;
+}
+
+// Return the name of a month given the integer
+char *nmonth_to_smonth(int month) {
+    switch (month) {
+        case 1:
+            return "January";
+        case 2:
+            return "February";
+        case 3:
+            return "March";
+        case 4:
+            return "April";
+        case 5:
+            return "May";
+        case 6:
+            return "June";
+        case 7:
+            return "July";
+        case 8:
+            return "August";
+        case 9:
+            return "September";
+        case 10:
+            return "October";
+        case 11:
+            return "November";
+        case 12:
+            return "December";
+        default:
+            return "Unknown";
+    }
 }
 
 // Given a pointer to a single Post

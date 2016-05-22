@@ -28,16 +28,30 @@ struct Posts {
     struct  Post *posts;
 };
 
+struct archives {
+    char **month_s;
+    int *month;
+    int *year;
+    int *post_count;
+    int row_count;
+};
+
 int callback(void *data, int argc, char **argv, char **azColName);
+static int archives_callback(void *data, int argc, char **argv, char **azColName);
 
 struct Posts load_posts(int number_of_posts, int offset);
 struct Post load_post_id(int post_id);
+struct Posts load_posts_monthyear(int month, int year);
 // Given a keyword string, returns all posts where it appears in the body text
 struct Posts search_posts(char *keyword);
 
 int update_post(char *post_id, char *post_title, char *post_text);
 int create_post(char *post_title, char *post_text);
 int delete_post(int post_id);
+
+struct archives load_archives();
+
+char *nmonth_to_smonth(int month);
 
 void free_post(struct Post *post);
 void free_posts(struct Posts *posts);

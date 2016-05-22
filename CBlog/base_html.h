@@ -14,10 +14,13 @@
 #include <string.h>
 
 // Print HTML header info, loads css js, and navbar
-void init_page();
+void init_page(const char* page_name);
 
 // Prints page footer, copyright, name, etc
 void print_footer();
+
+// Prints google analytics scripts
+void include_google_analytics();
 
 // Returns a new string with newlines replaces by <br>
 char *newline_to_html(const char* string);
@@ -25,6 +28,7 @@ char *newline_to_html(const char* string);
 // Given a title and body text (and optional time), displays a bootstrap panel
 // Argument extra is rendered as HTML
 void print_panel(const char* title, const char* text, const char* time, const char* extra);
+void print_blog_post(const char* title, const char* text, const char* time, const char* extra);
 
 // Decodes URL strings to text (eg '+' -> ' ' and % hex codes)
 void html_to_text(char *source, char *dest);

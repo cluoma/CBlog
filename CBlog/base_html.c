@@ -13,31 +13,47 @@
 #include "base_html.h"
 
 // printf mandatory CGI data and layout html
-void init_page() {
-    char *env_string = getenv("QUERY_STRING");
-    unsigned long env_length = 0;
+void init_page(const char* page_name) {
+    
+    char *env_string;
+    if (getenv("QUERY_STRING") != NULL) {
+        env_string = getenv("QUERY_STRING");
+    } else {
+        env_string = "";
+    }
+    
+    char *blog_active;
+    char *contact_active;
+    if (strcmp(page_name, "blog") == 0) {
+        blog_active = " class=\"active\"";
+        contact_active = "";
+    } else if (strcmp(page_name, "contact") == 0) {
+        blog_active = "";
+        contact_active = " class=\"active\"";
+    } else {
+        blog_active = "";
+        contact_active = "";
+    }
     
     printf("Context-Type: text/html\n\n");
     
-    const char *base_page = "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta name=\"description\" content=\"\"><meta name=\"author\" content=\"\"><title>Colin Luoma's Blog</title><!-- jQuery Version 1.11.1 --><script src=\"/js/jquery.js\"></script><!-- Bootstrap Core JavaScript --><script src=\"/js/bootstrap.min.js\"></script><!-- Bootstrap Core CSS --><link href=\"/css/bootstrap.min.css\" rel=\"stylesheet\"><!-- Custom CSS --><style>body {padding-top: 70px; background-color: #bbbbbb;}</style><link rel=\"shortcut icon\" type=\"image/png\" href=\"/images/favicon.png\"/></head><body><!-- Navigation --><nav class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\"><div class=\"container\"><!-- Brand and toggle get grouped for better mobile display --><div class=\"navbar-header\"><button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\"><span class=\"sr-only\">Toggle navigation</span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span></button><a class=\"navbar-brand\" href=\"/cgi-bin/cblog.cgi\">Colin Luoma</a></div><!-- Collect the nav links, forms, and other content for toggling --><div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\"><ul class=\"nav navbar-nav\"><li><a href=\"/cgi-bin/cblog.cgi?\">Blog</a></li><li><a href=\"/cgi-bin/contact.cgi?\">Contact</a></li></ul><form action=\"/cgi-bin/cblog.cgi\" method=\"get\" class=\"navbar-form navbar-right\" role=\"search\"><div class=\"input-group\"><input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Search\"><span class=\"input-group-btn\"><button type=\"submit\" class=\"btn btn-default\"><span class=\"glyphicon glyphicon-search\"></span></button></span></input></div></form></div><!-- /.navbar-collapse --></div><!-- /.container --></nav>";
-    
-    if (env_string != NULL) {
-        env_length = strlen(env_string);
-        char *prop = malloc(strlen(base_page) + env_length*2 + 1);
-        sprintf(prop, "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta name=\"description\" content=\"\"><meta name=\"author\" content=\"\"><title>Colin Luoma's Blog</title><!-- jQuery Version 1.11.1 --><script src=\"/js/jquery.js\"></script><!-- Bootstrap Core JavaScript --><script src=\"/js/bootstrap.min.js\"></script><!-- Bootstrap Core CSS --><link href=\"/css/bootstrap.min.css\" rel=\"stylesheet\"><!-- Custom CSS --><style>body {padding-top: 70px; background-color: #bbbbbb;}</style><link rel=\"shortcut icon\" type=\"image/png\" href=\"/images/favicon.png\"/></head><body><!-- Navigation --><nav class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\"><div class=\"container\"><!-- Brand and toggle get grouped for better mobile display --><div class=\"navbar-header\"><button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\"><span class=\"sr-only\">Toggle navigation</span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span></button><a class=\"navbar-brand\" href=\"/cgi-bin/cblog.cgi\">Colin Luoma</a></div><!-- Collect the nav links, forms, and other content for toggling --><div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\"><ul class=\"nav navbar-nav\"><li><a href=\"/cgi-bin/cblog.cgi?%s\">Blog</a></li><li><a href=\"/cgi-bin/contact.cgi?%s\">Contact</a></li></ul><form action=\"/cgi-bin/cblog.cgi\" method=\"get\" class=\"navbar-form navbar-right\" role=\"search\"><div class=\"input-group\"><input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Search\"><span class=\"input-group-btn\"><button type=\"submit\" class=\"btn btn-default\"><span class=\"glyphicon glyphicon-search\"></span></button></span></input></div></form></div><!-- /.navbar-collapse --></div><!-- /.container --></nav>", env_string, env_string);
-        prop[strlen(base_page) + env_length*2] = '\0';
-        printf("%s", prop);
-        free(prop);
-    } else {
-        printf("%s", base_page);
-    }
+    char *prop;
+    asprintf(&prop, "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta name=\"description\" content=\"\"><meta name=\"author\" content=\"\"><title>Colin Luoma's Blog</title><!-- jQuery Version 1.11.1 --><script src=\"/js/jquery.js\"></script><!-- Bootstrap Core JavaScript --><script src=\"/js/bootstrap.min.js\"></script><!-- Bootstrap Core CSS --><link href=\"/css/bootstrap.min.css\" rel=\"stylesheet\"><!-- Custom CSS --><style>body {padding-top: 70px;}</style><link rel=\"shortcut icon\" type=\"image/png\" href=\"/images/favicon.png\"/></head><body><!-- Navigation --><nav class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\"><div class=\"container\"><!-- Brand and toggle get grouped for better mobile display --><div class=\"navbar-header\"><button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\"><span class=\"sr-only\">Toggle navigation</span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span></button><a class=\"navbar-brand\" href=\"/cgi-bin/cblog.cgi\">Colin Luoma</a></div><!-- Collect the nav links, forms, and other content for toggling --><div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\"><ul class=\"nav navbar-nav\"><li%s><a href=\"/cgi-bin/cblog.cgi?%s\">Blog</a></li><li%s><a href=\"/cgi-bin/contact.cgi?%s\">Contact</a></li></ul><form action=\"/cgi-bin/cblog.cgi\" method=\"get\" class=\"navbar-form navbar-right\" role=\"search\"><div class=\"input-group\"><input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Search\"><span class=\"input-group-btn\"><button type=\"submit\" class=\"btn btn-default\"><span class=\"glyphicon glyphicon-search\"></span></button></span></input></div></form></div><!-- /.navbar-collapse --></div><!-- /.container --></nav>", blog_active, env_string, contact_active, env_string);
+    printf("%s", prop);
+    free(prop);
 }
 
 // Prints page footer, copyright, name, etc
 void print_footer() {
-    printf("<footer style=\"text-align: center\">Copyright 2016 Colin Luoma<br>");
-    printf("Made with C and Twitter Bootstrap<br><3");
+    printf("<footer class=\"blog-footer\"><p>Copyright 2016 Colin Luoma<br>");
+    printf("Made with C and Twitter Bootstrap</p>");
+    printf("<p><a href=\"#\">Back to top</a></p>");
     printf("</footer>");
+}
+
+// Prints google analytics scripts
+void include_google_analytics() {
+    printf("<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create', 'UA-41292983-3', 'auto');ga('send', 'pageview');</script>");
 }
 
 // Returns a new string with all '\n' characters replaced by "<br>" for use in HTML
@@ -144,10 +160,10 @@ char *get_variable(char *source, char *var) {
 // Argument extra is rendered as HTML
 void print_panel(const char* title, const char* text, const char* time, const char* extra) {
     /* Panel */
-    printf("<div class=\"panel panel-default\" style=\"border-color: black\">");
+    printf("<div class=\"panel panel-default\" style=\"border-color: #428bca\">");
     
     /* Panel Heading */
-    printf("<div class=\"panel-heading\" style=\"background-color: #222; color: #66bbdd\">%s</div>", title);
+    printf("<div class=\"panel-heading\" style=\"background-color: #428bca; color: #fff\">%s</div>", title);
     
     /* Panel Body */
     printf("<div class=\"panel-body\">");
@@ -170,6 +186,33 @@ void print_panel(const char* title, const char* text, const char* time, const ch
     
     /* Close Body */
     printf("</div>");
+    
+    /* Close Panel */
+    printf("</div>");
+}
+
+void print_blog_post(const char* title, const char* text, const char* time, const char* extra) {
+    /* Panel */
+    printf("<div class=\"blog-post\">");
+    
+    /* Panel Heading */
+    printf("<h2 class=\"blog-post-title\">%s</h2>", title);
+    
+    /* Display time if not NULL */
+    if (time != NULL) {
+        printf("<p class=\"blog-post-meta\">%s</p>", time);
+    }
+    
+    /* Display body text if not NULL */
+    char *formatted_post_text = newline_to_html(text);
+    if (formatted_post_text != NULL)
+        printf("<p>%s</p>", formatted_post_text);
+    free(formatted_post_text); // Free temporary string
+    
+    /* Print extra stuff as html if not null */
+    if (extra != NULL) {
+        printf("%s", extra);
+    }
     
     /* Close Panel */
     printf("</div>");

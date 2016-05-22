@@ -34,6 +34,11 @@
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
 		<key>update_post.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -73,6 +78,11 @@
 			<true/>
 		</dict>
 		<key>3B8A5A9C1CE3A81C000D0AA3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3BD3BF931CE8F1FF00FE1C35</key>
 		<dict>
 			<key>primary</key>
 			<true/>

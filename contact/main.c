@@ -71,12 +71,12 @@ void print_contact() {
 int main(int argc, const char * argv[]) {
     
     /* Mandatory HTML info and navbar, etc. */
-    init_page();
+    init_page("contact");
     
     printf("<div class=\"container\" width=\"80%%\">"); // Start container that holds everything
     
     // Show all panels
-    print_about_panel();
+    //print_about_panel();
     print_ongoing_projects();
     print_contact();
     

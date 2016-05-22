@@ -31,6 +31,9 @@
 		3BD3BF8C1CE769AF00FE1C35 /* base_html.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BD3BF881CE75C9800FE1C35 /* base_html.c */; };
 		3BD3BF8D1CE772E600FE1C35 /* base_html.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BD3BF881CE75C9800FE1C35 /* base_html.c */; };
 		3BD3BF8E1CE78FBC00FE1C35 /* base_html.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BD3BF881CE75C9800FE1C35 /* base_html.c */; };
+		3BD3BF971CE8F1FF00FE1C35 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BD3BF961CE8F1FF00FE1C35 /* main.c */; };
+		3BD3BF9B1CE8F21F00FE1C35 /* test.cgi in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3BD3BF941CE8F1FF00FE1C35 /* test.cgi */; };
+		3BD3BF9C1CF1EFEA00FE1C35 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B8A5A331CDBCAB0000D0AA3 /* libsqlite3.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -94,6 +97,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3BD3BF921CE8F1FF00FE1C35 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "~/Documents/CBlog/server/cgi-bin";
+			dstSubfolderSpec = 0;
+			files = (
+				3BD3BF9B1CE8F21F00FE1C35 /* test.cgi in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -118,6 +131,8 @@
 		3BD3BF881CE75C9800FE1C35 /* base_html.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_html.c; sourceTree = "<group>"; };
 		3BD3BF891CE75C9800FE1C35 /* base_html.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base_html.h; sourceTree = "<group>"; };
 		3BD3BF8F1CE7BAE300FE1C35 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		3BD3BF941CE8F1FF00FE1C35 /* test.cgi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test.cgi; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BD3BF961CE8F1FF00FE1C35 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +182,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3BD3BF911CE8F1FF00FE1C35 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BD3BF9C1CF1EFEA00FE1C35 /* libsqlite3.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -182,6 +205,7 @@
 				3B8A5A5B1CDF7E67000D0AA3 /* update_post */,
 				3B8A5A8F1CE26AC4000D0AA3 /* add_file */,
 				3B8A5A9E1CE3A81C000D0AA3 /* file_browser */,
+				3BD3BF951CE8F1FF00FE1C35 /* test */,
 				3B8A5A281CDB660A000D0AA3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -195,6 +219,7 @@
 				3B8A5A5A1CDF7E67000D0AA3 /* update_post.cgi */,
 				3B8A5A8E1CE26AC4000D0AA3 /* add_file.cgi */,
 				3B8A5A9D1CE3A81C000D0AA3 /* file_browser.cgi */,
+				3BD3BF941CE8F1FF00FE1C35 /* test.cgi */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -251,6 +276,14 @@
 				3B8A5A9F1CE3A81C000D0AA3 /* main.c */,
 			);
 			path = file_browser;
+			sourceTree = "<group>";
+		};
+		3BD3BF951CE8F1FF00FE1C35 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				3BD3BF961CE8F1FF00FE1C35 /* main.c */,
+			);
+			path = test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -358,6 +391,23 @@
 			productReference = 3B8A5A9D1CE3A81C000D0AA3 /* file_browser.cgi */;
 			productType = "com.apple.product-type.tool";
 		};
+		3BD3BF931CE8F1FF00FE1C35 /* test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3BD3BF981CE8F1FF00FE1C35 /* Build configuration list for PBXNativeTarget "test" */;
+			buildPhases = (
+				3BD3BF901CE8F1FF00FE1C35 /* Sources */,
+				3BD3BF911CE8F1FF00FE1C35 /* Frameworks */,
+				3BD3BF921CE8F1FF00FE1C35 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = test;
+			productName = test;
+			productReference = 3BD3BF941CE8F1FF00FE1C35 /* test.cgi */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -385,6 +435,9 @@
 					3B8A5A9C1CE3A81C000D0AA3 = {
 						CreatedOnToolsVersion = 6.1.1;
 					};
+					3BD3BF931CE8F1FF00FE1C35 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
 				};
 			};
 			buildConfigurationList = 3B8A5A221CDB660A000D0AA3 /* Build configuration list for PBXProject "CBlog" */;
@@ -405,6 +458,7 @@
 				3B8A5A591CDF7E67000D0AA3 /* update_post */,
 				3B8A5A8D1CE26AC4000D0AA3 /* add_file */,
 				3B8A5A9C1CE3A81C000D0AA3 /* file_browser */,
+				3BD3BF931CE8F1FF00FE1C35 /* test */,
 			);
 		};
 /* End PBXProject section */
@@ -463,6 +517,14 @@
 			files = (
 				3B8A5AA01CE3A81C000D0AA3 /* main.c in Sources */,
 				3BD3BF8E1CE78FBC00FE1C35 /* base_html.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BD3BF901CE8F1FF00FE1C35 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BD3BF971CE8F1FF00FE1C35 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,6 +709,24 @@
 			};
 			name = Release;
 		};
+		3BD3BF991CE8F1FF00FE1C35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = test.cgi;
+			};
+			name = Debug;
+		};
+		3BD3BF9A1CE8F1FF00FE1C35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = test.cgi;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -712,6 +792,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		3BD3BF981CE8F1FF00FE1C35 /* Build configuration list for PBXNativeTarget "test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3BD3BF991CE8F1FF00FE1C35 /* Debug */,
+				3BD3BF9A1CE8F1FF00FE1C35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
