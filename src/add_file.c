@@ -53,7 +53,7 @@ int main(int argc, const char * argv[]) {
         
         // Complete file path with file name
         char *file_path;
-        asprintf(&file_path, "/Users/Colin/Documents/%s", file_name_buf);
+        asprintf(&file_path, "/home/ubuntu/CBlog/images/%s", file_name_buf);
         
         // Open file using filepath and filename
         FILE *out;

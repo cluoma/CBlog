@@ -106,7 +106,7 @@ static int archives_callback(void *data, int argc, char **argv, char **azColName
 sqlite3 *open_database() {
     sqlite3 *db;
     int rc;
-    char *db_location = "/Users/colin/Documents/CBlog/server/personl_blog.db";
+    char *db_location = "/home/ubuntu/CBlog/personl_blog.db";
     
     /* Open connection to SQLite db */
     rc = sqlite3_open(db_location, &db);

@@ -32,14 +32,14 @@ void print_blog_posts() {
     int number_of_posts_returned = posts.number_of_posts;
     
     // New Post button, (edit=0 means new post)
-    printf("<a href=\"/cgi-bin/post_editor.cgi?edit=0\" class=\"btn btn-info\" role=\"button\">New Post</a><br><br>");
+    printf("<a href=\"/edit_posts/post_editor.cgi?edit=0\" class=\"btn btn-info\" role=\"button\">New Post</a><br><br>");
     
     // Print each posts title, date, and edit/delete buttons
     for (int i = 0; i < number_of_posts_returned; i++) {
         
         // Edit and Delete buttons
         char *extra;
-        asprintf(&extra, "<a href=\"/cgi-bin/post_editor.cgi?edit=%d\" class=\"btn btn-info\" role=\"button\" style=\"float: left\">Edit</a><a href=\"/cgi-bin/post_editor.cgi?delete=%d\" class=\"btn btn-info\" role=\"button\" style=\"float: right\">Delete</a>", my_posts[i].post_id, my_posts[i].post_id);
+        asprintf(&extra, "<a href=\"/edit_posts/post_editor.cgi?edit=%d\" class=\"btn btn-info\" role=\"button\" style=\"float: left\">Edit</a><a href=\"/edit_posts/post_editor.cgi?delete=%d\" class=\"btn btn-info\" role=\"button\" style=\"float: right\">Delete</a>", my_posts[i].post_id, my_posts[i].post_id);
         
         print_panel(my_posts[i].title, NULL, my_posts[i].time, extra);
         free(extra);
@@ -54,7 +54,7 @@ void edit_post(int post_id) {
     struct Post post = load_post_id(post_id);
     
     /* Start Form */
-    char *form_start = "<form role=\"form\" method=\"post\" action=\"/cgi-bin/update_post.cgi\">";
+    char *form_start = "<form role=\"form\" method=\"post\" action=\"/edit_posts/update_post.cgi\">";
     
     // Title
     char *title;
@@ -91,7 +91,7 @@ void edit_post(int post_id) {
 void new_post() {
     
     /* Start Form */
-    char *start_form = "<form role=\"form\" method=\"post\" action=\"/cgi-bin/update_post.cgi\">";
+    char *start_form = "<form role=\"form\" method=\"post\" action=\"/edit_posts/update_post.cgi\">";
     
     // Title
     char *title = "<div class=\"form-group\"><label for=\"post_title\">Title:</label><textarea name=\"post_title\" class=\"form-control\" rows=\"1\" id=\"post_title\"></textarea></div><br>";
@@ -132,10 +132,10 @@ void remove_post(int post_id) {
 
 int main(int argc, const char * argv[]) {
     
-    char *env_string = getenv("QUERY_STRING");
+    //char *env_string = getenv("QUERY_STRING");
     
     // DEBUGGING
-    //char *env_string = "edit=0";
+    char *env_string = "edit=0";
     //
     
     /* Mandatory HTML info and navbar, etc. */

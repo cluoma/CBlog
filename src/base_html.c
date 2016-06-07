@@ -70,9 +70,18 @@ char *newline_to_html(const char* string) {
     // Allocate space for new string with enough room for the <br>'s
     char *new_string = malloc(strlen(string) + newlines*3 + 1);
     
+    int pre_tags_open = 0;
     int new_index = 0;
     for (int old_index = 0; old_index < strlen(string); old_index++) {
-        if (string[old_index] == '\n')
+        
+        // Test if we're inside a <pre> tag
+        if (old_index < strlen(string) - 5 && strncmp(string+old_index, "<pre", 4) == 0) {
+            pre_tags_open += 1;
+        } else if (old_index < strlen(string) - 6 && strncmp(string+old_index, "</pre>", 6) == 0) {
+            pre_tags_open -= 1;
+        }
+        
+        if (string[old_index] == '\n' && pre_tags_open == 0)
         {
             new_string[new_index] = '<';
             new_index++;

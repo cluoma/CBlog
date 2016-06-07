@@ -58,7 +58,7 @@ void picture_panel(const char *name) {
 // Opens directory containing pictures creates a panel for each one
 void display_pictures () {
     // Path to images, this is different from the web directory
-    char *file_path = "/Users/Colin/Documents/CBlog/server/images/";
+    char *file_path = "/home/ubuntu/CBlog/images/";
     DIR *directory;
     struct dirent *dirent;
     
@@ -84,7 +84,7 @@ void display_pictures () {
 }
 
 void upload_form() {
-    printf("<form method=\"post\" action=\"/cgi-bin/add_file.cgi\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"file\"></input><input type=\"submit\" value=\"submit\"></input></form>");
+    printf("<form method=\"post\" action=\"/edit_posts/add_file.cgi\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"file\"></input><input type=\"submit\" value=\"submit\"></input></form>");
 }
 
 int main(int argc, const char * argv[]) {
