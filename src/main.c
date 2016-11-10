@@ -46,20 +46,21 @@ int main()
         fgets(post_data, (int)content_length, stdin);
     }
 
-    /* Which page was requested */
-    char *page = get_variable(query_string, "page=");
+    /* Parse query string */
+    query_vars query;
+    parse_query_string(query_string, &query);
 
     /* Mandatory HTML info and navbar, etc. */
-    init_page(page, script_name, query_string);
+    init_page(query.page, script_name, query_string);
 
-    parse_query_string(query_string);
-    printf("request_method: %s\n", request_method);
+    printf("page: '%s'\nstart: '%s'\nend: '%s'\nsearch: '%s'\n",
+            query.page, query.start, query.end, query.search);
     return 0;
 
     /* Google analytics script */
     include_google_analytics();
 
-    print_page(page, query_string);
+    print_page(query.page, query_string);
 
     printf("</body>"); // End HTML body, is opened in init_page()
 

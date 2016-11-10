@@ -37,7 +37,7 @@ struct archives {
 };
 
 int callback(void *data, int argc, char **argv, char **azColName);
-static int archives_callback(void *data, int argc, char **argv, char **azColName);
+int archives_callback(void *data, int argc, char **argv, char **azColName);
 
 struct Posts load_posts(int number_of_posts, int offset);
 struct Post load_post_id(int post_id);

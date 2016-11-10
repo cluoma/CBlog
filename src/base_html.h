@@ -15,6 +15,13 @@
 
 #define GET_ENV_VAR(X) ( (getenv(X) == NULL) ? "" : getenv(X) )
 
+typedef struct query_vars {
+    char *page;
+    char *start;
+    char *end;
+    char *search;
+} query_vars;
+
 // Print HTML header info, loads css js, and navbar
 void
 init_page(const char* page_name, const char *script_name, const char* query_string);
@@ -50,6 +57,6 @@ char *
 get_variable(char *source, char *var);
 
 void
-parse_query_string(char *query_string);
+parse_query_string(char *query_string, query_vars *query);
 
 #endif /* defined(__CBlog__base_html__) */

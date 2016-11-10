@@ -57,7 +57,7 @@ int callback(void *data, int argc, char **argv, char **azColName) {
     return 0;
 }
 
-static int archives_callback(void *data, int argc, char **argv, char **azColName){
+int archives_callback(void *data, int argc, char **argv, char **azColName){
     // Recast void *data to struct
     struct archives *archives = data;
 
@@ -107,7 +107,7 @@ sqlite3 *open_database() {
     sqlite3 *db;
     int rc;
     char *db_location = "/home/colin/Documents/BlogDB/personal_blog.db";
-    
+
     /* Open connection to SQLite db */
     rc = sqlite3_open(db_location, &db);
     if( rc ){
