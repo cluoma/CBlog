@@ -12,6 +12,7 @@
 #include <math.h>
 #include "load_posts.h"
 #include "base_html.h"
+#include "cblog.h"
 
 // Return maximum value of a or b
 int max(int a, int b) {
@@ -25,16 +26,16 @@ int max(int a, int b) {
 
 void print_archives() {
     struct archives archives = load_archives();
-    
+
     printf("<div class=\"sidebar-module\"><h4>Archives</h4><ol class=\"list-unstyled\">");
-    
+
     for (int i = 0; i < archives.row_count; i++) {
         printf("<li><a href=\"/cgi-bin/cblog.cgi?month=%d&year=%d\">%s %d (%d)</a></li>", archives.month[i], archives.year[i], archives.month_s[i], archives.year[i], archives.post_count[i]);
         free(archives.month_s[i]);
     }
-    
+
     printf("</ol></div>");
-    
+
     free(archives.month_s);
     free(archives.month);
     free(archives.year);
@@ -46,7 +47,7 @@ void print_archives() {
 void print_blog_posts(int start, int end, char *search) {
     // How many posts are between start and end?
     int number_of_posts_requested = max(end-start+1, 0);
-    
+
     struct Posts posts;
     if (search != NULL) {
         // Loads all posts that contain search
@@ -58,7 +59,7 @@ void print_blog_posts(int start, int end, char *search) {
     struct Post *my_posts = posts.posts;
     // This could be less than number_of_posts_requested
     int number_of_posts_returned = posts.number_of_posts;
-    
+
     // Print each posts
     for (int i = 0; i < number_of_posts_returned; i++) {
         // Use a panel for each post
@@ -66,15 +67,15 @@ void print_blog_posts(int start, int end, char *search) {
     }
     // Free the whole list of posts
     free_posts(&posts);
-    
-    
+
+
     // Older and New buttons
     printf("<nav><ul class=\"pager\">");
     // If we got the same number of posts we asked for, show the older button
     if (number_of_posts_requested == number_of_posts_returned) {
         printf("<li><a href=\"/cgi-bin/cblog.cgi?start=%d&end=%d\">Older</a></li>", end+1, end+5);
     }
-    
+
     // If start > 0, show the newer button (means there are newer posts available)
     if (start > 0) {
        printf("<li><a href=\"/cgi-bin/cblog.cgi?start=%d&end=%d\">Newer</a></li>", start-5, start-1);
@@ -83,14 +84,14 @@ void print_blog_posts(int start, int end, char *search) {
 }
 
 void print_posts_by_monthyear(int month, int year) {
-    
+
     struct Posts posts;
     posts = load_posts_monthyear(month, year);
-    
+
     struct Post *my_posts = posts.posts;
     // This could be less than number_of_posts_requested
     int number_of_posts_returned = posts.number_of_posts;
-    
+
     // Print each posts
     for (int i = 0; i < number_of_posts_returned; i++) {
         // Use a panel for each post
@@ -102,13 +103,13 @@ void print_posts_by_monthyear(int month, int year) {
 
 // Shows a notification panel when a search has been made
 void print_search_notification(char *keyword) {
-    
+
     // Search text
     char *text;
     asprintf(&text, "Showing blog posts containing the search phrase: <b>%s</b>", keyword);
-    
+
     print_panel("Search", text, NULL, NULL);
-    
+
     free(text);
 }
 
@@ -118,28 +119,18 @@ void print_about_box() {
     printf("</p></div>");
 }
 
-int main(int argc, const char * argv[]) {
-    
-    /* Mandatory HTML info and navbar, etc. */
-    init_page("blog");
-    
-    /* Google analytics script */
-    include_google_analytics();
-    
-    /* Print Blog entries */
-    char *env_string = getenv("QUERY_STRING");
-    
-    // Get the variables we want from env variable
+void print_cblog(char *env_string)
+{
     char *start = get_variable(env_string, "start=");
     char *end = get_variable(env_string, "end=");
     char *search = get_variable(env_string, "search=");
     char *month = get_variable(env_string, "month=");
     char *year = get_variable(env_string, "year=");
-    
+
     printf("<div class=\"container\">"); // Start container that holds posts
-    
+
     printf("<div class=\"row\"><div class=\"col-sm-8 blog-main\">");
-    
+
     if (search != NULL) {
         print_search_notification(search);
         print_blog_posts(0, 10000, search);
@@ -154,27 +145,18 @@ int main(int argc, const char * argv[]) {
     }
     // Free the variables we got
     free(start); free(end); free(search);
-    
+
     printf("</div>"); // Close Blog
-    
+
     // Blog sidebar
     printf("<div class=\"col-sm-3 col-sm-offset-1 blog-sidebar\">");
-    
+
     print_about_box();
     print_archives();
-    
+
     printf("</div>"); // Close sidebar
-    
+
     printf("</div>"); // Close row
-    
+
     printf("</div>"); // Close container
-    
-    printf("</body>"); // End HTML body, is opened in init_page()
-    
-    /* Print page footer, copyright, name, etc. */
-    print_footer();
-    
-    printf("</html>");
-    
-    return 0;
 }
