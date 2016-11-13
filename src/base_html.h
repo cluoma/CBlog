@@ -20,11 +20,13 @@ typedef struct query_vars {
     char *start;
     char *end;
     char *search;
+    char *month;
+    char *year;
 } query_vars;
 
 // Print HTML header info, loads css js, and navbar
 void
-init_page(const char* page_name, const char *script_name, const char* query_string);
+init_page(const char* page_name, const char *script_name, query_vars *query);
 
 // Prints page footer, copyright, name, etc
 void

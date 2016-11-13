@@ -16,19 +16,62 @@
 void
 parse_query_string(char *query_string, query_vars *query)
 {
-    query->page = get_variable(query_string, "page=");
-    query->start = get_variable(query_string, "start=");
-    query->end = get_variable(query_string, "end=");
-    query->search = get_variable(query_string, "search=");
+    query->page     = get_variable(query_string, "page");
+    query->start    = get_variable(query_string, "start");
+    query->end      = get_variable(query_string, "end");
+    query->search   = get_variable(query_string, "search");
+    query->month    = get_variable(query_string, "month");
+    query->year     = get_variable(query_string, "year");
+}
+
+// Combine all uri query variables into a single string
+char *
+query_vars_to_url(query_vars *query)
+{
+    // Allocate enough space for all variables
+    char *string = calloc(1, strlen("start")+strlen("end")+strlen("search")+strlen("month")+strlen("year")+10+
+                            strlen(query->start)+strlen(query->end)+strlen(query->search)+strlen(query->month)+strlen(query->year) + 1);
+
+    if ((strcmp(query->start, "")) != 0)
+    {
+        strcat(string, "start=");
+        strcat(string, query->start);
+        strcat(string, "&");
+    }
+    if ((strcmp(query->end, "")) != 0)
+    {
+        strcat(string, "start=");
+        strcat(string, query->end);
+        strcat(string, "&");
+    }
+    if ((strcmp(query->search, "")) != 0)
+    {
+        strcat(string, "start=");
+        strcat(string, query->search);
+        strcat(string, "&");
+    }
+    if ((strcmp(query->month, "")) != 0)
+    {
+        strcat(string, "start=");
+        strcat(string, query->month);
+        strcat(string, "&");
+    }
+    if ((strcmp(query->year, "")) != 0)
+    {
+        strcat(string, "start=");
+        strcat(string, query->year);
+        strcat(string, "&");
+    }
+    return string;
 }
 
 // printf mandatory CGI data and layout html
 void
-init_page(const char* page_name, const char *script_name, const char* query_string)
+init_page(const char* page_name, const char *script_name, query_vars *query)
 {
     char *blog_active = "";
     char *contact_active = "";
-    if (strcmp(page_name, "cblog") == 0) {
+    if ((strcmp(page_name, "") == 0) || (strcmp(page_name, "cblog") == 0)) {
         blog_active = " class=\"active\"";
         contact_active = "";
     } else if (strcmp(page_name, "contact") == 0) {
@@ -76,8 +119,8 @@ init_page(const char* page_name, const char *script_name, const char* query_stri
     <!-- Collect the nav links, forms, and other content for toggling -->\
     <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\
     <ul class=\"nav navbar-nav\">\
-    <li%s><a href=\"%s?page=cblog\">Blog</a></li>\
-    <li%s><a href=\"%s?page=contact\">Contact</a></li>\
+    <li%s><a href=\"%s?page=cblog&%s\">Blog</a></li>\
+    <li%s><a href=\"%s?page=contact&%s\">Contact</a></li>\
     </ul>\
     <form action=\"%s\" method=\"get\" class=\"navbar-form navbar-right\" role=\"search\">\
     <div class=\"input-group\"><input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Search\">\
@@ -94,7 +137,7 @@ init_page(const char* page_name, const char *script_name, const char* query_stri
     </div>\
     <!-- /.container -->\
     </nav>",
-    blog_active, script_name, contact_active, script_name, script_name);
+    blog_active, script_name, query_vars_to_url(query), contact_active, script_name, query_vars_to_url(query), script_name);
     if (len > -1)
     {
         printf("%s", prop);
@@ -188,22 +231,32 @@ html_to_text(char *source, char *dest)
     *dest = '\0';
 }
 
-// Must include '=' after variable name
 // Malloc is used, up to user to free returned string
-// Doesn't check beginning of variable (eg post_title= could match against my_post_title=)
 char *
 get_variable(char *source, char *var)
 {
 
-    // Return NULL if source is empty
-    if (source == NULL) return NULL;
+    // Return empty string if source is empty
+    if (source == NULL)
+    {
+        return calloc(1, 1);
+    }
 
-    char *tmp = strstr(source, var); // Find variable
+    // Search for needle in haystack
+    char *needle = calloc(1, strlen(var) + 3);
+    strcat(needle, "&"); strcat(needle, var); strcat(needle, "=");
+    char *tmp = strstr(source, needle);
+    
+    free(needle);
 
-    // Return NULL if string not found
-    if (tmp == NULL) return tmp;
+    // Return empty string if string not found
+    if (tmp == NULL)
+    {
+        return calloc(1, 1);
+    }
 
-    tmp += strlen(var); // Offset the variable name
+    // Increment pointer by needle
+    tmp += strlen(var)+2;
 
     // How many characters until '&'
     int length = 0;
@@ -214,14 +267,11 @@ get_variable(char *source, char *var)
     tmp = tmp - length;
 
     // Space for 2 new strings
-    char *variable_raw = malloc(length+1);
+    char *variable_raw = calloc(1, length+1);
     char *variable_filtered = malloc(length+1);
 
-    // Use source to fill raw string
-    for (int i = 0; i < length; i++) {
-        variable_raw[i] = tmp[i];
-    }
-    variable_raw[length] = '\0';
+    // Copy variable from query string
+    strncpy(variable_raw, tmp, length);
 
     // Decode raw string to filtered string and free raw string
     html_to_text(variable_raw, variable_filtered);

@@ -73,12 +73,12 @@ void print_blog_posts(int start, int end, char *search) {
     printf("<nav><ul class=\"pager\">");
     // If we got the same number of posts we asked for, show the older button
     if (number_of_posts_requested == number_of_posts_returned) {
-        printf("<li><a href=\"/cgi-bin/cblog.cgi?start=%d&end=%d\">Older</a></li>", end+1, end+5);
+        printf("<li><a href=\"/cgi-bin/cblog.cgi?page=cblog&start=%d&end=%d\">Older</a></li>", end+1, end+5);
     }
 
     // If start > 0, show the newer button (means there are newer posts available)
     if (start > 0) {
-       printf("<li><a href=\"/cgi-bin/cblog.cgi?start=%d&end=%d\">Newer</a></li>", start-5, start-1);
+       printf("<li><a href=\"/cgi-bin/cblog.cgi?page=cblog&start=%d&end=%d\">Newer</a></li>", start-5, start-1);
     }
     printf("</ul></nav>"); // Close older/newer buttons
 }
@@ -119,32 +119,24 @@ void print_about_box() {
     printf("</p></div>");
 }
 
-void print_cblog(char *env_string)
+void print_cblog(query_vars *query)
 {
-    char *start = get_variable(env_string, "start=");
-    char *end = get_variable(env_string, "end=");
-    char *search = get_variable(env_string, "search=");
-    char *month = get_variable(env_string, "month=");
-    char *year = get_variable(env_string, "year=");
-
     printf("<div class=\"container\">"); // Start container that holds posts
 
     printf("<div class=\"row\"><div class=\"col-sm-8 blog-main\">");
 
-    if (search != NULL) {
-        print_search_notification(search);
-        print_blog_posts(0, 10000, search);
-    } else if (month != NULL && year != NULL) {
-        print_posts_by_monthyear(atoi(month), atoi(year));
-    } else if (start != NULL && end != NULL) {
-        int int_start = atoi(start);
-        int int_end = atoi(end);
+    if (strcmp(query->search, "") != 0) {
+        print_search_notification(query->search);
+        print_blog_posts(0, 10000, query->search);
+    } else if (strcmp(query->month, "") != 0 && strcmp(query->year, "") != 0) {
+        print_posts_by_monthyear(atoi(query->month), atoi(query->year));
+    } else if (strcmp(query->start, "") != 0 && strcmp(query->end, "") != 0) {
+        int int_start = atoi(query->start);
+        int int_end = atoi(query->end);
         print_blog_posts(int_start, int_end, NULL);
     } else {
         print_blog_posts(0, 4, NULL);
     }
-    // Free the variables we got
-    free(start); free(end); free(search);
 
     printf("</div>"); // Close Blog
 

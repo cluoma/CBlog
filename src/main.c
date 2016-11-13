@@ -15,12 +15,12 @@
 #include "cblog.h"
 #include "contact.h"
 
-void print_page(char *page, char *env_string)
+void print_page(query_vars *query)
 {
-    if (page == NULL || (strcmp(page, "cblog") == 0))
+    if ((strcmp(query->page, "") == 0) || (strcmp(query->page, "cblog") == 0))
     {
-        print_cblog(env_string);
-    } else if (strcmp(page, "contact") == 0)
+        print_cblog(query);
+    } else if (strcmp(query->page, "contact") == 0)
     {
         print_contact();
     }
@@ -41,8 +41,7 @@ int main()
     }
     else
     {
-        post_data = malloc(content_length);
-        memset(post_data, 0, content_length+1);
+        post_data = calloc(1, content_length+1);
         fgets(post_data, (int)content_length, stdin);
     }
 
@@ -51,16 +50,16 @@ int main()
     parse_query_string(query_string, &query);
 
     /* Mandatory HTML info and navbar, etc. */
-    init_page(query.page, script_name, query_string);
-
-    printf("page: '%s'\nstart: '%s'\nend: '%s'\nsearch: '%s'\n",
-            query.page, query.start, query.end, query.search);
-    return 0;
+    init_page(query.page, script_name, &query);
 
     /* Google analytics script */
     include_google_analytics();
 
-    print_page(query.page, query_string);
+    //print_page(&query);
+
+    printf("%s<br>", query.page);
+
+    //free(query.page); free(query.start); free(query.end);
 
     printf("</body>"); // End HTML body, is opened in init_page()
 
